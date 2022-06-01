@@ -257,10 +257,12 @@ esp_err_t ll_cam_set_pin(cam_obj_t *cam, const camera_config_t *config)
         config->pin_d0, config->pin_d1, config->pin_d2, config->pin_d3, config->pin_d4, config->pin_d5, config->pin_d6, config->pin_d7,
     };
     for (int i = 0; i < 8; i++) {
-        PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[data_pins[i]], PIN_FUNC_GPIO);
-        gpio_set_direction(data_pins[i], GPIO_MODE_INPUT);
-        gpio_set_pull_mode(data_pins[i], GPIO_FLOATING);
-        gpio_matrix_in(data_pins[i], CAM_DATA_IN0_IDX + i, false);
+        if (data_pins[i] >= 0) {
+            PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[data_pins[i]], PIN_FUNC_GPIO);
+            gpio_set_direction(data_pins[i], GPIO_MODE_INPUT);
+            gpio_set_pull_mode(data_pins[i], GPIO_FLOATING);
+            gpio_matrix_in(data_pins[i], CAM_DATA_IN0_IDX + i, false);
+        }
     }
 
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[config->pin_xclk], PIN_FUNC_GPIO);
@@ -436,6 +438,9 @@ esp_err_t ll_cam_set_sample_mode(cam_obj_t *cam, pixformat_t pix_format, uint32_
             cam->in_bytes_per_pixel = 2;       // camera sends YU/YV
             cam->fb_bytes_per_pixel = 2;       // frame buffer stores YU/YV/RGB565
     } else if (pix_format == PIXFORMAT_JPEG) {
+        cam->in_bytes_per_pixel = 1;
+        cam->fb_bytes_per_pixel = 1;
+    } else if (pix_format == PIXFORMAT_RAW) {
         cam->in_bytes_per_pixel = 1;
         cam->fb_bytes_per_pixel = 1;
     } else {

@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "esp_timer.h"
 #include "esp_heap_caps.h"
 #include "ll_cam.h"
 #include "cam_hal.h"

@@ -71,7 +71,8 @@ typedef enum {
 
 typedef enum {
     CAM_STATE_IDLE = 0,
-    CAM_STATE_READ_BUF = 1,
+    CAM_STATE_WAIT_FLASH,
+    CAM_STATE_READ_BUF,
 } cam_state_t;
 
 typedef struct {
@@ -119,8 +120,6 @@ typedef struct {
     uint8_t in_bytes_per_pixel;
     uint8_t fb_bytes_per_pixel;
     uint32_t fb_size;
-
-    cam_flash_t flash;
 
     cam_state_t state;
 } cam_obj_t;

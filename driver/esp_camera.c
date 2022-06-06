@@ -230,6 +230,21 @@ static esp_err_t camera_probe(const camera_config_t *config, camera_model_t *out
     return ESP_OK;
 }
 
+int esp_camera_flash(int type, bool state)
+{
+    static int flash_type = -1;
+    if (type > 0) {
+        flash_type = type;
+    } else {
+        // Flash enable 
+        if (flash_type >= 0) {
+            return s_state->sensor.set_flash(&s_state->sensor, flash_type, 0);
+        }
+    }
+    return -1;
+}
+
+
 esp_err_t esp_camera_init(const camera_config_t *config)
 {
     esp_err_t err;
@@ -238,6 +253,10 @@ esp_err_t esp_camera_init(const camera_config_t *config)
         ESP_LOGE(TAG, "Camera init failed with error 0x%x", err);
         return err;
     }
+
+    //Flash 
+    esp_camera_flash(config->flash, 0);
+    cam_flash = esp_camera_flash;
 
     camera_model_t camera_model = CAMERA_NONE;
     err = camera_probe(config, &camera_model);

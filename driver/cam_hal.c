@@ -114,6 +114,7 @@ void IRAM_ATTR ll_cam_send_event(cam_obj_t *cam, cam_event_t cam_event, BaseType
 //Copy fram from DMA dma_buffer to fram dma_buffer
 static void cam_task(void *arg)
 {
+    static int frame_wait = -1, frame_cnt = 0;
     int cnt = 0;
     int frame_pos = 0;
     cam_obj->state = CAM_STATE_IDLE;
@@ -126,19 +127,37 @@ static void cam_task(void *arg)
         DBG_PIN_SET(1);
         switch (cam_obj->state) {
 
-            case CAM_STATE_IDLE: {
+            case CAM_STATE_IDLE:
+            {
                 if (cam_event == CAM_VSYNC_EVENT) {
                     //DBG_PIN_SET(1);
-                    if(cam_start_frame(&frame_pos)){
+                    if ((frame_wait = cam_flash(-1, 1)) >= 0) {
+                        cam_obj->state = CAM_STATE_WAIT_FLASH;
+                        frame_cnt = 0;
+                    } else if(cam_start_frame(&frame_pos)){
                         cam_obj->frames[frame_pos].fb.len = 0;
                         cam_obj->state = CAM_STATE_READ_BUF;
                     }
                     cnt = 0;
                 }
+                break;
             }
-            break;
 
-            case CAM_STATE_READ_BUF: {
+            case CAM_STATE_WAIT_FLASH:
+            {
+                if (cam_event == CAM_VSYNC_EVENT && ++frame_cnt > (frame_wait - 1)) {
+                    if(cam_start_frame(&frame_pos)) {
+                        cam_obj->frames[frame_pos].fb.len = 0;
+                        cam_obj->state = CAM_STATE_READ_BUF;
+                    } else {
+                        cam_obj->state = CAM_STATE_IDLE;
+                    }
+                }
+                break;
+            }
+
+            case CAM_STATE_READ_BUF:
+            {
                 camera_fb_t * frame_buffer_event = &cam_obj->frames[frame_pos].fb;
                 size_t pixels_per_dma = (cam_obj->dma_half_buffer_size * cam_obj->fb_bytes_per_pixel) / (cam_obj->dma_bytes_per_item * cam_obj->in_bytes_per_pixel);
                 

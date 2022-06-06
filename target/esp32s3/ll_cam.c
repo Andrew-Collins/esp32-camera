@@ -46,11 +46,6 @@ static void IRAM_ATTR ll_cam_vsync_isr(void *arg)
         return;
     }
 
-    if (cam.flash.enable && (++cam.flash.cnt > cam.flash.wait[cam.flash.mode]))  {
-
-    }
-    
-    
     LCD_CAM.lc_dma_int_clr.val = status.val;
 
     if (status.cam_vsync_int_st) {

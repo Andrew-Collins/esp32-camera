@@ -120,6 +120,8 @@ typedef struct {
     uint8_t fb_bytes_per_pixel;
     uint32_t fb_size;
 
+    cam_flash_t flash;
+
     cam_state_t state;
 } cam_obj_t;
 

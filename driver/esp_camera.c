@@ -283,7 +283,6 @@ esp_err_t esp_camera_init(const camera_config_t *config)
         s_state->sensor.set_lenc(&s_state->sensor, true);
     } else if (s_state->sensor.id.PID == OV5640_PID) {
         s_state->sensor.set_gainceiling(&s_state->sensor, GAINCEILING_2X);
-        /* s_state->sensor.set_saturation(&s_state->sensor, 4); */
     }
     if (pix_format == PIXFORMAT_JPEG) {
         s_state->sensor.set_quality(&s_state->sensor, config->jpeg_quality);

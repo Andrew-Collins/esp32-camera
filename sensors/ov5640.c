@@ -1043,6 +1043,26 @@ static int set_xclk(sensor_t *sensor, int timer, int xclk)
     return ret;
 }
 
+
+static int set_flash(sensor_t *sensor, int type, bool state)
+{
+    // Which frame after flash request is properly exposed
+    uint8_t frame_wait[] = {
+        3,
+        3,
+        3, 
+        1
+    };
+    // Only 4 valid types
+    if (type > 3 || type < 0) {
+        return -1;
+    }
+    // Try to write register
+    int ret = write_reg(sensor->slv_addr, STROBE_CTRL, (state << 7) | type);
+    // Send -1 if failed write, otherwise send number of frames to wait
+    return ret + (ret + 1)*frame_wait[type];
+}
+
 static int init_status(sensor_t *sensor)
 {
     sensor->status.brightness = 0;
@@ -1126,5 +1146,6 @@ int ov5640_init(sensor_t *sensor)
     sensor->set_res_raw = set_res_raw;
     sensor->set_pll = _set_pll;
     sensor->set_xclk = set_xclk;
+    sensor->set_flash = set_flash;
     return 0;
 }

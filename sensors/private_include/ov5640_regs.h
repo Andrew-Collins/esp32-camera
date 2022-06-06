@@ -4,6 +4,18 @@
 #ifndef __OV5640_REG_REGS_H__
 #define __OV5640_REG_REGS_H__
 
+
+/* Flash */
+#define STROBE_CTRL     0x3B00  // Bit[7]: Strobe On/off
+                                // Bit[6]: Pulse Reverse
+                                // Bit[5:4]: Reserved 
+                                // Bit[3:2]: Xenon width
+                                // Bit[1:0]: Strobe Mode
+                                //   00: Xenon
+                                //   01: LED 1
+                                //   10: LED 2
+                                //   11: LED 3
+ 
 /* system control registers */
 #define SYSTEM_CTROL0   0x3008  // Bit[7]: Software reset 
                                 // Bit[6]: Software power down 
@@ -49,8 +61,6 @@
                                 //         0: Auto enable
                                 //         1: Manual enable
 
-//gain = {0x350A[1:0], 0x350B[7:0]} / 16
-
 
 #define X_ADDR_ST_H     0x3800 //Bit[3:0]: X address start[11:8]
 #define X_ADDR_ST_L     0x3801 //Bit[7:0]: X address start[7:0]
@@ -78,8 +88,6 @@
 #define Y_INCREMENT     0x3815 //Bit[7:4]: Vertical odd subsample increment
                                //Bit[3:0]: Vertical even subsample increment
 // Size before scaling
-//#define X_INPUT_SIZE    (X_ADDR_END - X_ADDR_ST + 1 - (2 * X_OFFSET))
-//#define Y_INPUT_SIZE    (Y_ADDR_END - Y_ADDR_ST + 1 - (2 * Y_OFFSET))
 
 /* mirror and flip registers */
 #define TIMING_TC_REG20 0x3820  // Timing Control Register
@@ -149,7 +157,6 @@
                                         //         10: Square data
                                         //         11: Black image
 
-//exposure = {0x3500[3:0], 0x3501[7:0], 0x3502[7:0]} / 16 × tROW
 
 #define SCALE_CTRL_1     0x5601 // Bit[6:4]: HDIV RW
                                 //          DCW scale times

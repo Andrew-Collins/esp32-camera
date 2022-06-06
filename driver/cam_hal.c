@@ -237,6 +237,7 @@ static void cam_task(void *arg)
 
                     if(!cam_start_frame(&frame_pos)){
                         cam_obj->state = CAM_STATE_IDLE;
+                        cam_flash(-1, 0);
                     } else {
                         cam_obj->frames[frame_pos].fb.len = 0;
                     }

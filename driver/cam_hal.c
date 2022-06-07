@@ -131,10 +131,13 @@ static void cam_task(void *arg)
             {
                 if (cam_event == CAM_VSYNC_EVENT) {
                     //DBG_PIN_SET(1);
-                    if ((frame_wait = cam_flash(-1, 1)) >= 0) {
+                    if ((frame_wait = cam_flash(-1, 1) - 1) >= 0) {
+                        ESP_LOGI(TAG, "Flash enabled: %d", frame_wait);
                         cam_obj->state = CAM_STATE_WAIT_FLASH;
                         frame_cnt = 0;
                     } else if(cam_start_frame(&frame_pos)){
+                        cam_frex(-1); 
+                        ESP_LOGI(TAG, "No Flash");
                         cam_obj->frames[frame_pos].fb.len = 0;
                         cam_obj->state = CAM_STATE_READ_BUF;
                     }
@@ -145,11 +148,14 @@ static void cam_task(void *arg)
 
             case CAM_STATE_WAIT_FLASH:
             {
-                if (cam_event == CAM_VSYNC_EVENT && ++frame_cnt > (frame_wait - 1)) {
+                ESP_LOGI(TAG, "Frame wait num: %d", frame_cnt);
+                if (cam_event == CAM_VSYNC_EVENT && ++frame_cnt > frame_wait) {
                     if(cam_start_frame(&frame_pos)) {
+                        ESP_LOGI(TAG, "Next frame is exp");
                         cam_obj->frames[frame_pos].fb.len = 0;
                         cam_obj->state = CAM_STATE_READ_BUF;
                     } else {
+                        ESP_LOGE(TAG, "Waiting error");
                         cam_obj->state = CAM_STATE_IDLE;
                     }
                 }

@@ -223,7 +223,7 @@ static esp_err_t camera_probe(const camera_config_t *config, camera_model_t *out
     ESP_LOGI(TAG, "Camera PID=0x%02x VER=0x%02x MIDL=0x%02x MIDH=0x%02x",
              id->PID, id->VER, id->MIDH, id->MIDL);
 
-    ESP_LOGD(TAG, "Doing SW reset of sensor");
+    ESP_LOGI(TAG, "Doing SW reset of sensor");
     vTaskDelay(10 / portTICK_PERIOD_MS);
     s_state->sensor.reset(&s_state->sensor);
 
@@ -233,13 +233,23 @@ static esp_err_t camera_probe(const camera_config_t *config, camera_model_t *out
 int esp_camera_flash(int type, bool state)
 {
     static int flash_type = -1;
-    if (type > 0) {
+    if (type >= 0) {
         flash_type = type;
     } else {
         // Flash enable 
         if (flash_type >= 0) {
-            return s_state->sensor.set_flash(&s_state->sensor, flash_type, 0);
+            return s_state->sensor.set_flash(&s_state->sensor, flash_type, state);
         }
+    }
+    return -1;
+}
+
+int esp_camera_frex(int enabled) {
+    static int en = 0;
+    if (enabled >= 0) {
+        en = enabled;
+    } else if (en) {
+        return s_state->sensor.frex_req(&s_state->sensor);
     }
     return -1;
 }
@@ -257,6 +267,9 @@ esp_err_t esp_camera_init(const camera_config_t *config)
     //Flash 
     esp_camera_flash(config->flash, 0);
     cam_flash = esp_camera_flash;
+
+    cam_frex = esp_camera_frex;
+    esp_camera_frex(config->frex);
 
     camera_model_t camera_model = CAMERA_NONE;
     err = camera_probe(config, &camera_model);

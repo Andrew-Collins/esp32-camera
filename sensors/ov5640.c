@@ -1051,16 +1051,29 @@ static int set_flash(sensor_t *sensor, int type, bool state)
         3,
         3,
         3, 
-        1
+        0
     };
+    uint8_t st = state;
+    uint8_t ty = type;
     // Only 4 valid types
     if (type > 3 || type < 0) {
         return -1;
     }
     // Try to write register
-    int ret = write_reg(sensor->slv_addr, STROBE_CTRL, (state << 7) | type);
+    /* int ret = write_reg(sensor->slv_addr, STROBE_CTRL, (st << 7) | (1 << 6) | 0x04 | ty); */
+    /* int ret = write_reg(sensor->slv_addr, STROBE_CTRL, (st << 7) | ty); */
+    int ret = write_reg(sensor->slv_addr, 0x3019, (st << 1));
+    ESP_LOGI(TAG, "Flash write reg: %d, %d", ret, st);
     // Send -1 if failed write, otherwise send number of frames to wait
     return ret + (ret + 1)*frame_wait[type];
+}
+
+
+static int frex_req(sensor_t *sensor)
+{
+    int ret = write_reg(sensor->slv_addr, 0x3B07, 1);
+    // Send -1 if failed write, otherwise send number of frames to wait
+    return ret;
 }
 
 static int init_status(sensor_t *sensor)
@@ -1147,5 +1160,6 @@ int ov5640_init(sensor_t *sensor)
     sensor->set_pll = _set_pll;
     sensor->set_xclk = set_xclk;
     sensor->set_flash = set_flash;
+    sensor->frex_req = frex_req;
     return 0;
 }

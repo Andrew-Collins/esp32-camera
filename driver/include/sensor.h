@@ -245,6 +245,7 @@ typedef struct _sensor {
     int  (*set_pll)             (sensor_t *sensor, int bypass, int mul, int sys, int root, int pre, int seld5, int pclken, int pclk);
     int  (*set_xclk)            (sensor_t *sensor, int timer, int xclk);
     int  (*set_flash)           (sensor_t *sensor, int type, bool state);
+    int  (*frex_req)            (sensor_t *sensor);
 } sensor_t;
 
 camera_sensor_info_t *esp_camera_sensor_get_info(sensor_id_t *id);

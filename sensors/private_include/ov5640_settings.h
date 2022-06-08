@@ -32,15 +32,13 @@ static const DRAM_ATTR uint16_t sensor_default_regs[][2] = {
 
     //io direction
     {0x3016, 0x02},
-    {0x3017, 0xff},
-    {0x3018, 0xff},
-
-    {0x301C, 0x02},
+    {0x3017, 0xFF},
+    {0x3018, 0xF0},
 
     {DRIVE_CAPABILITY, 0xc3},
     {CLOCK_POL_CONTROL, 0x21},
 
-
+    // Required for strobe to work with FREX
     {0x3B07, 0x01},
 
     /* {0x4713, 0x02},//jpg mode select */

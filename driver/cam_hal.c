@@ -131,11 +131,12 @@ static void cam_task(void *arg)
             {
                 if (cam_event == CAM_VSYNC_EVENT) {
                     //DBG_PIN_SET(1);
-                    if ((frame_wait = cam_flash(-1, 1) - 1) >= 0) {
-                        ESP_LOGI(TAG, "Flash enabled: %d", frame_wait);
-                        cam_obj->state = CAM_STATE_WAIT_FLASH;
-                        frame_cnt = 0;
-                    } else if(cam_start_frame(&frame_pos)){
+                    /* if ((frame_wait = cam_flash(-1, 1) - 1) >= 0) { */
+                    /*     ESP_LOGI(TAG, "Flash enabled: %d", frame_wait); */
+                    /*     cam_obj->state = CAM_STATE_WAIT_FLASH; */
+                    /*     frame_cnt = 0; */
+                    /* } else if(cam_start_frame(&frame_pos)){ */
+                    if(cam_start_frame(&frame_pos)){
                         cam_frex(-1); 
                         ESP_LOGI(TAG, "No Flash");
                         cam_obj->frames[frame_pos].fb.len = 0;
@@ -168,6 +169,10 @@ static void cam_task(void *arg)
                 size_t pixels_per_dma = (cam_obj->dma_half_buffer_size * cam_obj->fb_bytes_per_pixel) / (cam_obj->dma_bytes_per_item * cam_obj->in_bytes_per_pixel);
                 
                 if (cam_event == CAM_IN_SUC_EOF_EVENT) {
+                    /* if (frame_wait < 0) { */
+                    /*     frame_wait++; */
+                    /*     cam_flash(-1, 0); */
+                    /* } */
                     if(!cam_obj->psram_mode){
                         if (cam_obj->fb_size < (frame_buffer_event->len + pixels_per_dma)) {
                             ESP_LOGW(TAG, "FB-OVF");
@@ -243,7 +248,7 @@ static void cam_task(void *arg)
 
                     if(!cam_start_frame(&frame_pos)){
                         cam_obj->state = CAM_STATE_IDLE;
-                        cam_flash(-1, 0);
+                        /* cam_flash(-1, 0); */
                     } else {
                         cam_obj->frames[frame_pos].fb.len = 0;
                     }

@@ -40,10 +40,8 @@ static const DRAM_ATTR uint16_t sensor_default_regs[][2] = {
 
     // Required for strobe to work with FREX
     {0x3B07, 0x01},
-
-    /* {0x4713, 0x02},//jpg mode select */
-
-    /* {ISP_CONTROL_01, 0x83}, // turn color matrix, awb and SDE */
+    {0x3B0B, 0x00},
+    {0x3B0C, 0xFF},
 
     //sys reset
     {0x3000, 0x00},
@@ -54,13 +52,10 @@ static const DRAM_ATTR uint16_t sensor_default_regs[][2] = {
     {0x3006, 0xc3},
 
     /* //isp control */
-    /* {0x5000, 0xa7}, */
     {0x5000, 0x87},
     {ISP_CONTROL_01, 0x87},//+scaling?
-    /* {ISP_CONTROL_01, 0xa3},//+scaling? */
     {0x5003, 0x03},//special_effect
     {0x5005, 0x40},//special_effect
-    /* {0x5003, 0x00},//special_effect */
 
     //unknown
     {0x370c, 0x02},//!!IMPORTANT
@@ -86,10 +81,6 @@ static const DRAM_ATTR uint16_t sensor_default_regs[][2] = {
     {0x3a1b, 0x30},//ae_level
     {0x3a1e, 0x26},//ae_level
     {0x3a1f, 0x14},//ae_level
-
-    /* //vcm debug */
-    /* {0x3600, 0x08}, */
-    /* {0x3601, 0x33}, */
 
     //50/60Hz
     {0x3c01, 0xa4},

@@ -136,29 +136,33 @@ static void cam_task(void *arg)
                     /*     cam_obj->state = CAM_STATE_WAIT_FLASH; */
                     /*     frame_cnt = 0; */
                     /* } else if(cam_start_frame(&frame_pos)){ */
-                    if(cam_start_frame(&frame_pos)){
+                    if (cam_get_next_frame(&frame_pos)) {
+                        ESP_LOGI(TAG, "Frex Set");
                         cam_frex(-1); 
-                        ESP_LOGI(TAG, "No Flash");
-                        cam_obj->frames[frame_pos].fb.len = 0;
-                        cam_obj->state = CAM_STATE_READ_BUF;
+                        cam_obj -> state = CAM_STATE_WAIT_FLASH;
                     }
-                    cnt = 0;
                 }
                 break;
             }
 
             case CAM_STATE_WAIT_FLASH:
             {
-                ESP_LOGI(TAG, "Frame wait num: %d", frame_cnt);
-                if (cam_event == CAM_VSYNC_EVENT && ++frame_cnt > frame_wait) {
-                    if(cam_start_frame(&frame_pos)) {
-                        ESP_LOGI(TAG, "Next frame is exp");
+                if (cam_event == CAM_VSYNC_EVENT) {
+                    if(cam_start_frame(&frame_pos)){
+                        /* ESP_LOGI(TAG, "No Flash"); */
                         cam_obj->frames[frame_pos].fb.len = 0;
                         cam_obj->state = CAM_STATE_READ_BUF;
-                    } else {
-                        ESP_LOGE(TAG, "Waiting error");
-                        cam_obj->state = CAM_STATE_IDLE;
                     }
+                /* ESP_LOGI(TAG, "Frame wait num: %d", frame_cnt); */
+                /* if (cam_event == CAM_VSYNC_EVENT && ++frame_cnt > frame_wait) { */
+                /*     if(cam_start_frame(&frame_pos)) { */
+                /*         ESP_LOGI(TAG, "Next frame is exp"); */
+                /*         cam_obj->frames[frame_pos].fb.len = 0; */
+                /*         cam_obj->state = CAM_STATE_READ_BUF; */
+                /*     } else { */
+                /*         ESP_LOGE(TAG, "Waiting error"); */
+                /*         cam_obj->state = CAM_STATE_IDLE; */
+                /*     } */
                 }
                 break;
             }

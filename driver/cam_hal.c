@@ -114,7 +114,7 @@ void IRAM_ATTR ll_cam_send_event(cam_obj_t *cam, cam_event_t cam_event, BaseType
 //Copy fram from DMA dma_buffer to fram dma_buffer
 static void cam_task(void *arg)
 {
-    static int frame_wait = -1, frame_cnt = 0;
+    static int frame_wait = -1, frame_cnt = 0, frame_enabled = 0;
     int cnt = 0;
     int frame_pos = 0;
     cam_obj->state = CAM_STATE_IDLE;
@@ -137,9 +137,15 @@ static void cam_task(void *arg)
                     /*     frame_cnt = 0; */
                     /* } else if(cam_start_frame(&frame_pos)){ */
                     if (cam_get_next_frame(&frame_pos)) {
-                        ESP_LOGI(TAG, "Frex Set");
-                        cam_frex(-1); 
-                        cam_obj -> state = CAM_STATE_WAIT_FLASH;
+                        /* ESP_LOGI(TAG, "Frex Set"); */
+                        /* cam_frex(-1); */ 
+                        /* cam_obj -> state = CAM_STATE_WAIT_FLASH; */
+                        if ( frame_enabled || (frame_wait = cam_flash(-1, 1) - 1) >= 0) {
+                            ESP_LOGI(TAG, "Flash enabled: %d", frame_wait);
+                            frame_enabled = 1;
+                            cam_obj->state = CAM_STATE_WAIT_FLASH;
+                            frame_cnt = 0;
+                        }
                     }
                 }
                 break;
@@ -148,21 +154,22 @@ static void cam_task(void *arg)
             case CAM_STATE_WAIT_FLASH:
             {
                 if (cam_event == CAM_VSYNC_EVENT) {
-                    if(cam_start_frame(&frame_pos)){
-                        /* ESP_LOGI(TAG, "No Flash"); */
-                        cam_obj->frames[frame_pos].fb.len = 0;
-                        cam_obj->state = CAM_STATE_READ_BUF;
+                    /* if(cam_start_frame(&frame_pos)){ */
+                    /*     /1* ESP_LOGI(TAG, "No Flash"); *1/ */
+                    /*     cam_obj->frames[frame_pos].fb.len = 0; */
+                    /*     cam_obj->state = CAM_STATE_READ_BUF; */
+                    /* } */
+                    ESP_LOGI(TAG, "Frame wait num: %d", frame_cnt);
+                    if (cam_event == CAM_VSYNC_EVENT && ++frame_cnt > frame_wait) {
+                        if(cam_start_frame(&frame_pos)) {
+                            ESP_LOGI(TAG, "Next frame is exp");
+                            cam_obj->frames[frame_pos].fb.len = 0;
+                            cam_obj->state = CAM_STATE_READ_BUF;
+                        } else {
+                            ESP_LOGE(TAG, "Waiting error");
+                            cam_obj->state = CAM_STATE_IDLE;
+                        }
                     }
-                /* ESP_LOGI(TAG, "Frame wait num: %d", frame_cnt); */
-                /* if (cam_event == CAM_VSYNC_EVENT && ++frame_cnt > frame_wait) { */
-                /*     if(cam_start_frame(&frame_pos)) { */
-                /*         ESP_LOGI(TAG, "Next frame is exp"); */
-                /*         cam_obj->frames[frame_pos].fb.len = 0; */
-                /*         cam_obj->state = CAM_STATE_READ_BUF; */
-                /*     } else { */
-                /*         ESP_LOGE(TAG, "Waiting error"); */
-                /*         cam_obj->state = CAM_STATE_IDLE; */
-                /*     } */
                 }
                 break;
             }

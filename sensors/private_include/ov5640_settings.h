@@ -39,11 +39,11 @@ static const DRAM_ATTR uint16_t sensor_default_regs[][2] = {
     {CLOCK_POL_CONTROL, 0x21},
 
     // Required for strobe to work with FREX
-    {0x3B07, 0x01},
+    /* {0x3B07, 0x01}, */
 
     // Something to do with strobe width?
     /* {0x3B06, 0x0F}, */
-    {0x3B06, 0xF0},
+    /* {0x3B06, 0xF0}, */
     /* {0x3B06, 0xFF}, */
 
     //I think these set the black region?
@@ -54,25 +54,25 @@ static const DRAM_ATTR uint16_t sensor_default_regs[][2] = {
     /* {0x3B02, 0x00}, */
     /* {0x3B03, 0x00}, */
     //
-    {0x3B02, 0x80},
-    {0x3B03, 0x00},
+    /* {0x3B02, 0x80}, */
+    /* {0x3B03, 0x00}, */
 
     //Sets strobe width??
     /* {0x3B01, 0x02}, */
     /* {0x3B04, 0xFF}, */
     /* {0x3B05, 0xFF}, */
     //
-    {0x3B01, 0x00},
-    {0x3B04, 0xFF},
-    {0x3B05, 0xFF},
+    /* {0x3B01, 0x00}, */
+    /* {0x3B04, 0xFF}, */
+    /* {0x3B05, 0xFF}, */
 
     //Does nothing as far as I can tell
     /* {0x3B0A, 0x07}, */
-    {0x3B0A, 0x00},
+    /* {0x3B0A, 0x00}, */
 
     //I think these are actually exposure
-    {0x3B0B, 0xFF},
-    {0x3B0C, 0xFF},
+    /* {0x3B0B, 0xFF}, */
+    /* {0x3B0C, 0xFF}, */
 
     //sys reset
     {0x3000, 0x00},

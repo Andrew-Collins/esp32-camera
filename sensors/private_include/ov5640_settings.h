@@ -38,8 +38,8 @@ static const DRAM_ATTR uint16_t sensor_default_regs[][2] = {
     {DRIVE_CAPABILITY, 0xc3},
     {CLOCK_POL_CONTROL, 0x21},
 
-    // Required for strobe to work with FREX
-    /* {0x3B07, 0x01}, */
+    // Required for strobe requests to work
+    {0x3B07, 0x02},
 
     // Something to do with strobe width?
     /* {0x3B06, 0x0F}, */

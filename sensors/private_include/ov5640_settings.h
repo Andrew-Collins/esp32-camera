@@ -242,8 +242,7 @@ static const DRAM_ATTR uint16_t sensor_fmt_jpeg[][2] = {
 };
 
 static const DRAM_ATTR uint16_t sensor_fmt_raw[][2] = {
-    /* {0x503D, 0x80}, // RAW (DPC) */
-    {0x5001, 0x00}, // RAW (DPC)
+    /* {0x5001, 0x00}, // RAW (DPC) */
     {FORMAT_CTRL, 0x05}, // RAW (DPC)
     {FORMAT_CTRL00, 0x00}, // RAW
     {REGLIST_TAIL, 0x00}

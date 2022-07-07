@@ -1051,7 +1051,7 @@ static int set_flash(sensor_t *sensor, int type, bool state)
         3,
         3,
         3, 
-        0
+        1
     };
     uint8_t st = state;
     uint8_t ty = type;
@@ -1061,7 +1061,7 @@ static int set_flash(sensor_t *sensor, int type, bool state)
     }
     // Try to write register
     /* int ret = 0; */
-    int ret = write_reg(sensor->slv_addr, STROBE_CTRL, (st << 7) | ty);
+    int ret = write_reg(sensor->slv_addr, STROBE_CTRL, (st << 7)  | (0x00 << 2) | ty);
     /* ESP_LOGI(TAG, "Flash write reg: %d, %d", ret, (st << 7) | ty); */
     // Send -1 if failed write, otherwise send number of frames to wait
     /* return 0; */

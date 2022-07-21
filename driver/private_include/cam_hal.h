@@ -51,9 +51,6 @@ void cam_stop(void);
 
 void cam_start(void);
 
-int (*cam_flash)(int type, bool state);
-
-int (*cam_frex)(int enabled);
 
 camera_fb_t *cam_take(TickType_t timeout);
 

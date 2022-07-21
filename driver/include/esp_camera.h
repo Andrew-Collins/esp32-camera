@@ -209,6 +209,10 @@ esp_err_t esp_camera_save_to_nvs(const char *key);
  */
 esp_err_t esp_camera_load_from_nvs(const char *key);
 
+int esp_camera_flash(int type, bool state);
+
+int esp_camera_frex(int enabled);
+
 #ifdef __cplusplus
 }
 #endif

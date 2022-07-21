@@ -132,7 +132,7 @@ static void cam_task(void *arg)
                 if (cam_event == CAM_VSYNC_EVENT) {
                     //DBG_PIN_SET(1);
                     if (cam_get_next_frame(&frame_pos)) {
-                        if ((frame_wait = cam_flash(-1, 1) - 1) >= 0) {
+                        if ((frame_wait = esp_camera_flash(-1, 1) - 1) >= 0) {
                             ESP_LOGI(TAG, "Flash enabled: %d", frame_wait);
                             cam_obj->state = CAM_STATE_WAIT_FLASH;
                             frame_cnt = 0;
@@ -246,7 +246,7 @@ static void cam_task(void *arg)
 
                     if(!cam_start_frame(&frame_pos)){
                         cam_obj->state = CAM_STATE_IDLE;
-                        cam_flash(-1, 0);
+                        esp_camera_flash(-1, 0);
                     } else {
                         cam_obj->frames[frame_pos].fb.len = 0;
                     }

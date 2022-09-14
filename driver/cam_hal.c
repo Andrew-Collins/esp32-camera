@@ -115,6 +115,7 @@ void IRAM_ATTR ll_cam_send_event(cam_obj_t *cam, cam_event_t cam_event, BaseType
 static void cam_task(void *arg)
 {
     static int frame_wait = -1, frame_cnt = 0, frame_enabled = 0;
+    static int first = 0;
     int cnt = 0;
     int frame_pos = 0;
     cam_obj->state = CAM_STATE_IDLE;
@@ -124,18 +125,17 @@ static void cam_task(void *arg)
 
     while (1) {
         xQueueReceive(cam_obj->event_queue, (void *)&cam_event, portMAX_DELAY);
-        DBG_PIN_SET(1);
         switch (cam_obj->state) {
-
             case CAM_STATE_IDLE:
             {
                 if (cam_event == CAM_VSYNC_EVENT) {
-                    //DBG_PIN_SET(1);
+                    //Ignore the first one.
                     if (cam_get_next_frame(&frame_pos)) {
-                        if ((frame_wait = esp_camera_flash(-1, 1) - 1) >= 0) {
-                            ESP_LOGI(TAG, "Flash enabled: %d", frame_wait);
+                        if ((frame_wait = esp_camera_flash(-1, first) - 1) >= 0) {
+                            first = 1;
+                            /* ESP_LOGI(TAG, "Flash enabled: %d", frame_wait); */
                             cam_obj->state = CAM_STATE_WAIT_FLASH;
-                            frame_cnt = 0;
+                            frame_cnt = cam_obj->jpeg_mode ? 3: 0;
                         } else {
                             if(cam_start_frame(&frame_pos)) {
                                 cam_obj->frames[frame_pos].fb.len = 0;
@@ -175,7 +175,6 @@ static void cam_task(void *arg)
                         if (cam_obj->fb_size < (frame_buffer_event->len + pixels_per_dma)) {
                             ESP_LOGW(TAG, "FB-OVF");
                             ll_cam_stop(cam_obj);
-                            DBG_PIN_SET(0);
                             continue;
                         }
                         frame_buffer_event->len += ll_cam_memcpy(cam_obj,
@@ -191,7 +190,6 @@ static void cam_task(void *arg)
                     cnt++;
 
                 } else if (cam_event == CAM_VSYNC_EVENT) {
-                    //DBG_PIN_SET(1);
                     ll_cam_stop(cam_obj);
 
                     if (cnt || !cam_obj->jpeg_mode || cam_obj->psram_mode) {
@@ -255,7 +253,6 @@ static void cam_task(void *arg)
             }
             break;
         }
-        DBG_PIN_SET(0);
     }
 }
 

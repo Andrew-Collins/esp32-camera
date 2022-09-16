@@ -269,7 +269,7 @@ esp_err_t esp_camera_init(const camera_config_t *config)
     /* int (*cam_flash)(int type, bool state) = &esp_camera_flash; */
 
     /* int (*cam_frex)(int enabled) = &esp_camera_frex; */
-    esp_camera_frex(config->frex);
+    /* esp_camera_frex(config->frex); */
 
     camera_model_t camera_model = CAMERA_NONE;
     err = camera_probe(config, &camera_model);
@@ -313,8 +313,8 @@ esp_err_t esp_camera_init(const camera_config_t *config)
         s_state->sensor.set_bpc(&s_state->sensor, false);
         s_state->sensor.set_wpc(&s_state->sensor, true);
         s_state->sensor.set_lenc(&s_state->sensor, true);
-    } else if (s_state->sensor.id.PID == OV5640_PID) {
-        s_state->sensor.set_gainceiling(&s_state->sensor, 2);
+    /* } else if (s_state->sensor.id.PID == OV5640_PID) { */
+    /*     s_state->sensor.set_gainceiling(&s_state->sensor, 2); */
     }
     if (pix_format == PIXFORMAT_JPEG) {
         s_state->sensor.set_quality(&s_state->sensor, config->jpeg_quality);

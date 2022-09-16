@@ -135,7 +135,8 @@ static void cam_task(void *arg)
                             first = 1;
                             /* ESP_LOGI(TAG, "Flash enabled: %d", frame_wait); */
                             cam_obj->state = CAM_STATE_WAIT_FLASH;
-                            frame_cnt = cam_obj->jpeg_mode ? 3: 0;
+                            /* frame_cnt = cam_obj->jpeg_mode ? 3: 0; */
+                            frame_cnt = 0;
                         } else {
                             if(cam_start_frame(&frame_pos)) {
                                 cam_obj->frames[frame_pos].fb.len = 0;

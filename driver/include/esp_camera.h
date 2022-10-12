@@ -139,9 +139,7 @@ int esp_camera_flash(int type, bool state);
 
 int esp_camera_frex(int enabled);
 
-void esp_camera_start(void);
-
-void esp_camera_stop(void);
+int esp_camera_powerdown(void);
 
 #ifdef __cplusplus
 }

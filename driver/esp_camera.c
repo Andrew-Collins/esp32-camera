@@ -254,9 +254,12 @@ int esp_camera_frex(int enabled) {
   return -1;
 }
 
-void esp_camera_start(void) { cam_start(); }
-
-void esp_camera_stop(void) { cam_stop(); }
+int esp_camera_powerdown(void) {
+  int ret = 0;
+  ret += s_state->sensor.disable_clks(&s_state->sensor);
+  ret += s_state->sensor.set_pwdn(&s_state->sensor, 1);
+  return ret;
+}
 
 esp_err_t esp_camera_init(const camera_config_t *config) {
   esp_err_t err;

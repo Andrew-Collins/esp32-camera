@@ -390,6 +390,7 @@ esp_err_t esp_camera_save_to_nvs(const char *key) {
   if (ret == ESP_OK) {
     sensor_t *s = esp_camera_sensor_get();
     if (s != NULL) {
+      ESP_LOGI(TAG, "Film Type: %d", s->status.filmTypeId);
       ret = nvs_set_blob(handle, CAMERA_SENSOR_NVS_KEY, &s->status,
                          sizeof(camera_status_t));
       if (ret == ESP_OK) {
@@ -424,6 +425,8 @@ esp_err_t esp_camera_load_from_nvs(const char *key) {
       size_t size = sizeof(camera_status_t);
       ret = nvs_get_blob(handle, CAMERA_SENSOR_NVS_KEY, &st, &size);
       if (ret == ESP_OK) {
+        s->status.filmTypeId = st.filmTypeId;
+        s->status.rollId = st.rollId;
         s->set_ae_level(s, st.ae_level);
         s->set_aec2(s, st.aec2);
         s->set_aec_value(s, st.aec_value);

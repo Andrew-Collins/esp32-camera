@@ -622,7 +622,7 @@ static int set_wpc_dsp(sensor_t *sensor, int enable) {
   int ret = 0;
   ret = write_reg_bits(sensor->slv_addr, 0x5000, 0x02, enable);
   if (ret == 0) {
-    ESP_LOGD(TAG, "Set wpc to: %d", enable);
+    ESP_LOGI(TAG, "Set wpc to: %d", enable);
     sensor->status.wpc = enable;
   }
   return ret;

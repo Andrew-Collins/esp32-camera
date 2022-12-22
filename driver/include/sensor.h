@@ -167,8 +167,6 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-  int16_t filmTypeId;
-  int16_t rollId;
   int16_t brightness; //-2 - 2
   int16_t contrast;   //-2 - 2
   int16_t saturation; //-2 - 2
